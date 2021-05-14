@@ -7,6 +7,11 @@ import { TrackballControls } from '../libs/TrackballControls.js'
 
 // Clases de mi proyecto
 import { Tablero } from './objetos/Tablero.js'
+import { Larga } from './objetos/piezas/Larga.js';
+import { Cubo } from './objetos/piezas/Cubo.js';
+import { L } from './objetos/piezas/L.js';
+import { ZigZag } from './objetos/piezas/ZigZag.js';
+import { T } from './objetos/piezas/T.js';
 
 class MyScene extends THREE.Scene {
   constructor(myCanvas) {
@@ -37,6 +42,30 @@ class MyScene extends THREE.Scene {
     // ---------------------------------------------
     this.tablero = new Tablero(this.gui, "Controles del tablero");
     this.add(this.tablero);
+    this.larga = new Larga(this.gui, "Controles de la ficha azul");
+    this.add(this.larga);
+    this.cuboPieza = new Cubo(this.gui, "Controles de la ficha amarilla");
+    this.add(this.cuboPieza);
+    this.LPieza = new L(this.gui, "Controles de la ficha naranja");
+    this.add(this.LPieza);
+    this.ZigZag = new ZigZag(this.gui, "Contoles de la ficha verde");
+    this.add(this.ZigZag);
+    this.TPieza = new T(this.gui, "Controles de la ficha morada");
+    this.add(this.TPieza);
+
+    this.larga.translateY(5);
+
+    this.cuboPieza.translateY(5);
+    this.cuboPieza.translateX(-2.5);
+
+    this.LPieza.translateY(5);
+    this.LPieza.translateX(-5.5);
+
+    this.ZigZag.translateY(5);
+    this.ZigZag.translateX(6.5);
+
+    this.TPieza.translateY(5);
+    this.TPieza.translateX(3);
   }
 
   createCamera() {

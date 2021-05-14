@@ -4,11 +4,11 @@ class Tablero extends THREE.Object3D {
   constructor(gui, titleGui) {
     super();
 
-    const geometry = new THREE.BoxBufferGeometry(11,11,11);
+    const geometry = new THREE.BoxBufferGeometry(10,10,10);
     
     // Textura
     const loader = new THREE.TextureLoader();
-    const textura = loader.load('../texturas/textura_tablero.png');
+    const textura = loader.load('../texturas/textura_cuadrada.png');
     textura.wrapS = THREE.RepeatWrapping;
     textura.wrapT = THREE.RepeatWrapping;
     textura.repeat.set(10,10);
