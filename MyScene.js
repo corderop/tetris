@@ -160,8 +160,8 @@ class MyScene extends THREE.Scene {
     // --------------------------------------
     // ACTUALIZACIÓN DE MODELOS PARA EL EXAMEN
     // --------------------------------------
-    this.objeto.update();
-
+    this.tablero.update();
+    
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render(this, this.getCamera());
 
