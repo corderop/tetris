@@ -2,8 +2,8 @@ import * as THREE from '../../libs/three.module.js'
 import { Pieza } from './Pieza.js';
 
 class ZigZag extends Pieza {
-  constructor(gui, titleGui) {
-    super(gui, titleGui);
+  constructor() {
+    super();
 
     // Textura
     const loader = new THREE.TextureLoader();
@@ -16,10 +16,10 @@ class ZigZag extends Pieza {
     const geometryCubo3 = new THREE.BoxBufferGeometry(1,1,1);
     const geometryCubo4 = new THREE.BoxBufferGeometry(1,1,1);
     
-    geometryCubo1.translate( 0.5, 0.5, 0);
-    geometryCubo2.translate( 0.5, 1.5, 0);
-    geometryCubo3.translate(-0.5, 1.5, 0);
-    geometryCubo4.translate(-0.5, 2.5, 0);
+    geometryCubo1.translate( 0.5, -1, 0);
+    geometryCubo2.translate( 0.5,  0, 0);
+    geometryCubo3.translate(-0.5,  0, 0);
+    geometryCubo4.translate(-0.5,  1, 0);
 
     const mesh1 = new THREE.Mesh( geometryCubo1, material );
     this.add(mesh1);
@@ -31,6 +31,43 @@ class ZigZag extends Pieza {
     this.add(mesh4);
 
   }
+
+  moverAPuntoDeInicio(cara){
+
+    switch(cara){
+      case 0:
+        this.translateZ(0.5);
+        this.translateY(26.5);  
+        break;
+      case 1:
+        this.translateZ(0.5);
+        this.translateY(-26.5);
+        this.rotateX(Math.PI);
+        break;
+      case 2: 
+        this.translateZ(0.5);
+        this.translateX(26.5);
+        this.rotateZ(-Math.PI/2)
+        break;
+      case 3: 
+        this.translateZ(0.5);
+        this.translateX(-26.5);
+        this.rotateZ(Math.PI/2)
+        break;
+      case 4:
+        this.translateY(0.5);
+        this.translateZ(26.5);
+        this.rotateX(Math.PI/2);
+        break;  
+      case 5:
+        this.translateY(0.5);
+        this.translateZ(-26.5);
+        this.rotateX(-Math.PI/2);
+        break;
+    } 
+ 
+  } 
+
 
   update() {
     

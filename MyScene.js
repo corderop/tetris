@@ -4,6 +4,7 @@
 import * as THREE from '../libs/three.module.js'
 import { GUI } from '../libs/dat.gui.module.js'
 import { TrackballControls } from '../libs/TrackballControls.js'
+import { getRandomInt } from './aux.js';
 
 // Clases de mi proyecto
 import { Tablero } from './objetos/Tablero.js'
@@ -34,33 +35,77 @@ class MyScene extends THREE.Scene {
     this.createCamera();
 
     // Creación de ejes en el origen de coordenadas de tamaño 
-    this.axis = new THREE.AxesHelper(20);
+    this.axis = new THREE.AxesHelper(30);
     this.add(this.axis);
 
     // ---------------------------------------------
     // Modelos creados para la escena
     // ---------------------------------------------
     this.tablero = new Tablero(this.gui, "Controles del tablero");
-    this.add(this.tablero);
-    this.larga = new Larga(this.gui, "Controles de la ficha azul");
-    this.add(this.larga);
-    // this.cuboPieza = new Cubo(this.gui, "Controles de la ficha amarilla");
+    // this.add(this.tablero);
+    // this.larga = new Larga();
+    // this.add(this.larga);
+    // this.cuboPieza = new Cubo();
     // this.add(this.cuboPieza);
-    // this.LPieza = new L(this.gui, "Controles de la ficha naranja");
+    // this.LPieza = new L();
     // this.add(this.LPieza);
-    // this.ZigZag = new ZigZag(this.gui, "Contoles de la ficha verde");
+    // this.ZigZag = new ZigZag();
     // this.add(this.ZigZag);
-    // this.TPieza = new T(this.gui, "Controles de la ficha morada");
+    // this.TPieza = new T();
     // this.add(this.TPieza);
     
     this.piezaActual = -1;
     this.piezas = [];
 
-    // this.larga.translateX(15);
-    // this.larga.translateY(0.5);
-    // this.larga.translateZ(0.5);
-    // this.larga.rotateZ(-Math.PI/2);
+    // Para tener en cuenta en que cara se encuentra el jugador
+    // en todo momento
+    // 0 -> Positiva en el eje Y (Superior)
+    // 1 -> Negativa en el eje Y (Inferior)
+    // 2 -> Positiva en el eje X (Derecha)
+    // 3 -> Negativa en el eje X (Izquierda)
+    // 4 -> Positiva en el eje Z (Delante)
+    // 5 -> Negativa en el eje Z (Detrás)
+    this.caraActual = 0;
 
+    // Tiene los mismos valores que caraActual. Será la posición en la que 
+    // actualmente ese jugador está mirando para tenerlo en cuenta a la hora de
+    // moverse
+    this.direccionCamara = 0;
+
+    // this.TPieza.moverAPuntoDeInicio(this.caraActual);
+    this.generarPiezaAleatoria();
+    
+  }
+
+  generarPiezaAleatoria() {
+
+    const tipo = getRandomInt(5);
+    let pieza = undefined;
+    
+    switch (tipo){
+      case 0:
+        pieza = new Cubo();
+        break;
+      case 1:
+        pieza = new L();
+        break;
+      case 2:
+        pieza = new Larga();
+        break;
+      case 3: 
+        pieza = new T();
+        break;
+      case 4:
+        pieza = new ZigZag();
+        break;
+    }
+
+    this.piezaActual = this.piezas.length;
+    this.piezas.push(pieza);
+    this.add(this.piezas[this.piezaActual]);
+
+    // this.piezas[this.piezaActual].moverAPuntoDeInicio(this.caraActual);
+    
   }
 
   createCamera() {
@@ -206,20 +251,38 @@ $(function () {
   window.addEventListener("resize", () => scene.onWindowResize());
 
   window.addEventListener("keyup", (event) => {
+
     switch (event.keyCode){
       case 37: 
-        scene.larga.translateZ(1);
+        // Flecha hacia la izquierda
+        scene.piezas[scene.piezaActual].translateZ(1);
         break;
       case 38:
-        scene.larga.translateX(-1);
+        // Flecha hacia arriba
+        scene.piezas[scene.piezaActual].translateX(-1);
         break;
       case 39:
-        scene.larga.translateZ(-1);
+        // Flecha hacia la derecha
+        scene.piezas[scene.piezaActual].translateZ(-1);
         break;
       case 40:
-        scene.larga.translateX(1);
+        // Flecha hacia abajo
+        scene.piezas[scene.piezaActual].translateX(1);
         break;
+      // case 70:
+      //   // F
+      //   scene.piezas[scene.piezaActual].rotarALaDerecha();
+      //   // scene.piezas[scene.piezaActual].updateMatrix();
+      //   break;
+      // case 82:
+      //   // R
+      //   scene.piezas[scene.piezaActual].rotarHaciaDelante();
+      //   // scene.piezas[scene.piezaActual].updateMatrix();
+      //   break;
     }
+
+    console.log(scene.piezas[scene.piezaActual].rotation);
+
   })
 
   // Que no se nos olvide, la primera visualización.

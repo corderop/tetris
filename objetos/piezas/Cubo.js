@@ -2,9 +2,9 @@ import * as THREE from '../../libs/three.module.js'
 import { Pieza } from './Pieza.js';
 
 class Cubo extends Pieza {
-  constructor(gui, titleGui) {
+  constructor() {
 
-    super(gui, titleGui);
+    super();
 
     // Textura
     const loader = new THREE.TextureLoader();
@@ -17,12 +17,35 @@ class Cubo extends Pieza {
     // Geometrías
     const geometryCubo = new THREE.BoxBufferGeometry(2,2,2);
     
-    geometryCubo.translate(0, 1, 0);
-
     const mesh = new THREE.Mesh( geometryCubo, material );
     this.add(mesh);
 
   }
+
+  moverAPuntoDeInicio(cara){
+
+    switch(cara){
+      case 0: 
+        this.translateY(26);  
+        break;
+      case 1:
+        this.translateY(-26);
+        break;
+      case 2: 
+        this.translateX(26);
+        break;
+      case 3: 
+        this.translateX(-26);
+        break;
+      case 4:
+        this.translateZ(26);
+        break;
+      case 5:
+        this.translateZ(-26);
+        break;
+    } 
+ 
+  } 
 
   update() {
     
