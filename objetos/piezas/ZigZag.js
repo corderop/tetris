@@ -1,8 +1,9 @@
 import * as THREE from '../../libs/three.module.js'
+import { Pieza } from './Pieza.js';
 
-class ZigZag extends THREE.Object3D {
+class ZigZag extends Pieza {
   constructor(gui, titleGui) {
-    super();
+    super(gui, titleGui);
 
     // Textura
     const loader = new THREE.TextureLoader();

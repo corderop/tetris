@@ -34,7 +34,7 @@ class MyScene extends THREE.Scene {
     this.createCamera();
 
     // Creación de ejes en el origen de coordenadas de tamaño 
-    this.axis = new THREE.AxesHelper(11);
+    this.axis = new THREE.AxesHelper(20);
     this.add(this.axis);
 
     // ---------------------------------------------
@@ -44,28 +44,23 @@ class MyScene extends THREE.Scene {
     this.add(this.tablero);
     this.larga = new Larga(this.gui, "Controles de la ficha azul");
     this.add(this.larga);
-    this.cuboPieza = new Cubo(this.gui, "Controles de la ficha amarilla");
-    this.add(this.cuboPieza);
-    this.LPieza = new L(this.gui, "Controles de la ficha naranja");
-    this.add(this.LPieza);
-    this.ZigZag = new ZigZag(this.gui, "Contoles de la ficha verde");
-    this.add(this.ZigZag);
-    this.TPieza = new T(this.gui, "Controles de la ficha morada");
-    this.add(this.TPieza);
+    // this.cuboPieza = new Cubo(this.gui, "Controles de la ficha amarilla");
+    // this.add(this.cuboPieza);
+    // this.LPieza = new L(this.gui, "Controles de la ficha naranja");
+    // this.add(this.LPieza);
+    // this.ZigZag = new ZigZag(this.gui, "Contoles de la ficha verde");
+    // this.add(this.ZigZag);
+    // this.TPieza = new T(this.gui, "Controles de la ficha morada");
+    // this.add(this.TPieza);
+    
+    this.piezaActual = -1;
+    this.piezas = [];
 
-    this.larga.translateY(5);
+    // this.larga.translateX(15);
+    // this.larga.translateY(0.5);
+    // this.larga.translateZ(0.5);
+    // this.larga.rotateZ(-Math.PI/2);
 
-    this.cuboPieza.translateY(5);
-    this.cuboPieza.translateX(-2.5);
-
-    this.LPieza.translateY(5);
-    this.LPieza.translateX(-5.5);
-
-    this.ZigZag.translateY(5);
-    this.ZigZag.translateX(6.5);
-
-    this.TPieza.translateY(5);
-    this.TPieza.translateX(3);
   }
 
   createCamera() {
@@ -209,6 +204,23 @@ $(function () {
 
   // Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
   window.addEventListener("resize", () => scene.onWindowResize());
+
+  window.addEventListener("keyup", (event) => {
+    switch (event.keyCode){
+      case 37: 
+        scene.larga.translateZ(1);
+        break;
+      case 38:
+        scene.larga.translateX(-1);
+        break;
+      case 39:
+        scene.larga.translateZ(-1);
+        break;
+      case 40:
+        scene.larga.translateX(1);
+        break;
+    }
+  })
 
   // Que no se nos olvide, la primera visualización.
   scene.update();

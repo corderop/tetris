@@ -1,8 +1,10 @@
 import * as THREE from '../../libs/three.module.js'
+import { Pieza } from './Pieza.js';
 
-class Cubo extends THREE.Object3D {
+class Cubo extends Pieza {
   constructor(gui, titleGui) {
-    super();
+
+    super(gui, titleGui);
 
     // Textura
     const loader = new THREE.TextureLoader();
