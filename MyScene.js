@@ -42,7 +42,7 @@ class MyScene extends THREE.Scene {
     // Modelos creados para la escena
     // ---------------------------------------------
     this.tablero = new Tablero(this.gui, "Controles del tablero");
-    // this.add(this.tablero);
+    this.add(this.tablero);
     // this.larga = new Larga();
     // this.add(this.larga);
     // this.cuboPieza = new Cubo();
@@ -104,7 +104,7 @@ class MyScene extends THREE.Scene {
     this.piezas.push(pieza);
     this.add(this.piezas[this.piezaActual]);
 
-    // this.piezas[this.piezaActual].moverAPuntoDeInicio(this.caraActual);
+    this.piezas[this.piezaActual].moverAPuntoDeInicio(this.caraActual);
     
   }
 
@@ -269,16 +269,14 @@ $(function () {
         // Flecha hacia abajo
         scene.piezas[scene.piezaActual].translateX(1);
         break;
-      // case 70:
-      //   // F
-      //   scene.piezas[scene.piezaActual].rotarALaDerecha();
-      //   // scene.piezas[scene.piezaActual].updateMatrix();
-      //   break;
-      // case 82:
-      //   // R
-      //   scene.piezas[scene.piezaActual].rotarHaciaDelante();
-      //   // scene.piezas[scene.piezaActual].updateMatrix();
-      //   break;
+      case 70:
+        // F ->  Rotar hacia la derecha
+        scene.piezas[scene.piezaActual].rotateOnWorldAxis(new THREE.Vector3(1,0,0), -Math.PI/2);
+        break;
+      case 82:
+        // R -> Rotar hacia la izquierda
+        scene.piezas[scene.piezaActual].rotateOnWorldAxis(new THREE.Vector3(0,0,1), Math.PI/2);
+        break;
     }
 
     console.log(scene.piezas[scene.piezaActual].rotation);

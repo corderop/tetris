@@ -11,7 +11,6 @@ class Pieza extends THREE.Object3D {
   update() {
     
 
-
   }
 }
 
