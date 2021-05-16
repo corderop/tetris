@@ -58,6 +58,7 @@ class MyScene extends THREE.Scene {
     // 4 -> Positiva en el eje Z (Delante)
     // 5 -> Negativa en el eje Z (Detrás)
     this.caraActual = 0;
+    this.caraPrevia = 0;
 
     // Tiene los mismos valores que caraActual. Será la posición en la que 
     // actualmente ese jugador está mirando para tenerlo en cuenta a la hora de
@@ -96,8 +97,11 @@ class MyScene extends THREE.Scene {
     this.piezas.push(pieza);
     this.add(this.piezas[this.piezaActual]);
 
+    this.caraActual = getRandomInt(6);
+
     this.piezas[this.piezaActual].moverAPuntoDeInicio(this.caraActual);
-    
+
+
   }
 
   createCamera() {
@@ -134,15 +138,11 @@ class MyScene extends THREE.Scene {
     // En este caso la intensidad de la luz y si se muestran o no los ejes
     this.guiControls = new function () {
       // En el contexto de una función   this   alude a la función
-      this.lightIntensity = 0.5;
       this.axisOnOff = true;
     }
 
     // Se crea una sección para los controles de esta clase
     var folder = gui.addFolder('Luz y Ejes');
-
-    // Se le añade un control para la intensidad de la luz
-    folder.add(this.guiControls, 'lightIntensity', 0, 1, 0.1).name('Intensidad de la Luz : ');
 
     // Y otro para mostrar u ocultar los ejes
     folder.add(this.guiControls, 'axisOnOff').name('Mostrar ejes : ');
@@ -151,21 +151,13 @@ class MyScene extends THREE.Scene {
   }
 
   createLights() {
-    // Se crea una luz ambiental, evita que se vean complentamente negras las zonas donde no incide de manera directa una fuente de luz
-    // La luz ambiental solo tiene un color y una intensidad
-    // Se declara como   var   y va a ser una variable local a este método
-    //    se hace así puesto que no va a ser accedida desde otros métodos
-    var ambientLight = new THREE.AmbientLight(0xccddee, 0.35);
-    // La añadimos a la escena
-    this.add(ambientLight);
 
-    // Se crea una luz focal que va a ser la luz principal de la escena
-    // La luz focal, además tiene una posición, y un punto de mira
-    // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
-    // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
-    this.spotLight = new THREE.SpotLight(0xffffff, this.guiControls.lightIntensity);
-    this.spotLight.position.set(60, 60, 40);
-    this.add(this.spotLight);
+    this.ambientLight = new THREE.AmbientLight(0xccddee, 0.35);
+    this.pointLight = new THREE.PointLight(0xfcfcfc, 1, 50);
+    // La añadimos a la escena
+    this.add(this.ambientLight);
+    this.add(this.pointLight);
+
   }
 
   createRenderer(myCanvas) {
@@ -175,7 +167,7 @@ class MyScene extends THREE.Scene {
     var renderer = new THREE.WebGLRenderer();
 
     // Se establece un color de fondo en las imágenes que genera el render
-    renderer.setClearColor(new THREE.Color(0xEEEEEE), 1.0);
+    renderer.setClearColor(new THREE.Color(0x000000), 1.0);
 
     // Se establece el tamaño, se aprovecha la totalidad de la ventana del navegador
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -212,7 +204,7 @@ class MyScene extends THREE.Scene {
   update() {
     // Se actualizan los elementos de la escena para cada frame
     // Se actualiza la intensidad de la luz con lo que haya indicado el usuario en la gui
-    this.spotLight.intensity = this.guiControls.lightIntensity;
+    this.pointLight.position.set(this.piezas[this.piezaActual].position.x, this.piezas[this.piezaActual].position.y, this.piezas[this.piezaActual].position.z);
 
     // Se muestran o no los ejes según lo que idique la GUI
     this.axis.visible = this.guiControls.axisOnOff;
@@ -266,12 +258,12 @@ $(function () {
       case 70:
         // F ->  Rotar hacia la derecha
         scene.piezas[scene.piezaActual].rotateOnWorldAxis(new THREE.Vector3(1,0,0), -Math.PI/2);
-        scene.piezas[scene.piezaActual].worldToLocal();
+        console.log(scene.piezas[scene.piezaActual].up);
         break;
       case 82:
         // R -> Rotar hacia la izquierda
         scene.piezas[scene.piezaActual].rotateOnWorldAxis(new THREE.Vector3(0,0,1), Math.PI/2);
-        scene.piezas[scene.piezaActual].worldToLocal();
+        console.log(scene.piezas[scene.piezaActual].up);
         break;
       case 67:
         // C -> Para cambiar la dirección de la cámara

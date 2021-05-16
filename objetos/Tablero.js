@@ -13,7 +13,7 @@ class Tablero extends THREE.Object3D {
     textura.wrapT = THREE.RepeatWrapping;
     textura.repeat.set(10,10);
 
-    const mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({map: textura}) );
+    const mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial({map: textura}) );
     this.add(mesh);
 
   }

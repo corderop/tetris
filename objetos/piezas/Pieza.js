@@ -6,6 +6,8 @@ class Pieza extends THREE.Object3D {
     
     super();
     
+    // this.cajaEnglobante(this);
+
   }
   
   update() {
