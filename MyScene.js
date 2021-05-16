@@ -68,7 +68,6 @@ class MyScene extends THREE.Scene {
     // -1 -> Posición invertida
     this.direccionCamara = 1;
 
-    // this.TPieza.moverAPuntoDeInicio(this.caraActual);
     this.generarPiezaAleatoria();
     
   }
@@ -151,8 +150,7 @@ class MyScene extends THREE.Scene {
     this.piezas.push(pieza);
     this.add(this.piezas[this.piezaActual]);
 
-    // this.caraActual = getRandomInt(6);
-    this.caraActual = 1;
+    this.caraActual = getRandomInt(6);
     this.generarEje();
 
     this.piezas[this.piezaActual].moverAPuntoDeInicio(this.caraActual);

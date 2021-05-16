@@ -16,13 +16,10 @@ class T extends Pieza {
     const geometryCubo3 = new THREE.BoxBufferGeometry(1,1,1);
     const geometryCubo4 = new THREE.BoxBufferGeometry(1,1,1);
     
-    // En lugar de dejarlo en el eje de coordenadas, 
-    // se dejan esquinado con este para que encaje con la
-    // cuadrícula del tablero
-    geometryCubo1.translate( 0, -0.5, 0);
-    geometryCubo2.translate( 0,  0.5, 0);
-    geometryCubo3.translate(-1,  0.5, 0);
-    geometryCubo4.translate( 1,  0.5, 0);
+    geometryCubo1.translate( 0.5, -0.5, 0.5);
+    geometryCubo2.translate( 0.5,  0.5, 0.5);
+    geometryCubo3.translate(-0.5,  0.5, 0.5);
+    geometryCubo4.translate( 1.5,  0.5, 0.5);
 
     const mesh1 = new THREE.Mesh( geometryCubo1, material );
     this.add(mesh1);
@@ -39,37 +36,25 @@ class T extends Pieza {
 
     switch(cara){
       case 0:
-        this.translateZ(0.5);
-        this.translateX(0.5);
         this.translateY(26);  
         break;
       case 1:
-        this.translateZ(0.5);
-        this.translateX(0.5);
         this.translateY(-26);
         this.rotateX(Math.PI);
         break;
       case 2:
-        this.translateZ(0.5);
-        this.translateY(0.5);
         this.translateX(26);
         this.rotateZ(-Math.PI/2)
         break;
       case 3: 
-        this.translateZ(0.5);
-        this.translateY(0.5);
         this.translateX(-26);
         this.rotateZ(Math.PI/2)
         break;
       case 4:
-        this.translateY(0.5);
-        this.translateX(0.5);
         this.translateZ(26);
         this.rotateX(Math.PI/2);
         break;  
       case 5:
-        this.translateY(0.5);
-        this.translateX(0.5);
         this.translateZ(-26);
         this.rotateX(-Math.PI/2);
         break;
