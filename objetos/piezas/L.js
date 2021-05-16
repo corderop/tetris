@@ -39,27 +39,22 @@ class L extends Pieza {
         this.translateY(26);  
         break;
       case 1:
-        // this.translateZ(0.5);
         this.translateY(-26);
         this.rotateX(Math.PI);
         break;
       case 2: 
-        // this.translateZ(0.5);
         this.translateX(26);
         this.rotateZ(-Math.PI/2)
         break;
       case 3: 
-        // this.translateZ(0.5);
         this.translateX(-26);
         this.rotateZ(Math.PI/2)
         break;
       case 4:
-        // this.translateY(0.5);
         this.translateZ(26);
         this.rotateX(Math.PI/2);
         break;  
       case 5:
-        // this.translateY(0.5);
         this.translateZ(-26);
         this.rotateX(-Math.PI/2);
         break;
