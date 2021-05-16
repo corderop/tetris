@@ -4,6 +4,7 @@
 import * as THREE from '../libs/three.module.js'
 import { GUI } from '../libs/dat.gui.module.js'
 import { TrackballControls } from '../libs/TrackballControls.js'
+import { OrbitControls } from '../libs/OrbitControls.js';
 import { getRandomInt } from './aux.js';
 
 // Clases de mi proyecto
@@ -43,17 +44,8 @@ class MyScene extends THREE.Scene {
     // ---------------------------------------------
     this.tablero = new Tablero(this.gui, "Controles del tablero");
     this.add(this.tablero);
-    // this.larga = new Larga();
-    // this.add(this.larga);
-    // this.cuboPieza = new Cubo();
-    // this.add(this.cuboPieza);
-    // this.LPieza = new L();
-    // this.add(this.LPieza);
-    // this.ZigZag = new ZigZag();
-    // this.add(this.ZigZag);
-    // this.TPieza = new T();
-    // this.add(this.TPieza);
-    
+
+    // Vector de piezas
     this.piezaActual = -1;
     this.piezas = [];
 
@@ -114,20 +106,22 @@ class MyScene extends THREE.Scene {
     //   La razón de aspecto ancho/alto
     //   Los planos de recorte cercano y lejano
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // this.camera = new THREE.OrthographicCamera(window.innerWidth/-2, window.innerWidth/2, window.innerHeight/2 ,window.innerHeight/-2, 0.1, 1000);
     // También se indica dónde se coloca
-    this.camera.position.set(20, 10, 20);
+    this.camera.position.set(30,30,30);
     // Y hacia dónde mira
     var look = new THREE.Vector3(0, 0, 0);
+    this.camera.up = new THREE.Vector3(0,1,0);
     this.camera.lookAt(look);
     this.add(this.camera);
 
     // Para el control de cámara usamos una clase que ya tiene implementado los movimientos de órbita
-    this.cameraControl = new TrackballControls(this.camera, this.renderer.domElement);
-    // Se configuran las velocidades de los movimientos
-    this.cameraControl.rotateSpeed = 5;
-    this.cameraControl.zoomSpeed = -2;
-    this.cameraControl.panSpeed = 0.5;
-    // Debe orbitar con respecto al punto de mira de la cámara
+    this.cameraControl = new OrbitControls(this.camera, this.renderer.domElement);
+    // // Se configuran las velocidades de los movimientos
+    // this.cameraControl.rotateSpeed = 5;
+    this.cameraControl.zoomSpeed = 5;
+    // this.cameraControl.panSpeed = 0.5;
+    // // Debe orbitar con respecto al punto de mira de la cámara
     this.cameraControl.target = look;
   }
 
@@ -251,35 +245,42 @@ $(function () {
   window.addEventListener("resize", () => scene.onWindowResize());
 
   window.addEventListener("keyup", (event) => {
-
+    console.log(event);
     switch (event.keyCode){
-      case 37: 
-        // Flecha hacia la izquierda
-        scene.piezas[scene.piezaActual].translateZ(1);
+      case 65: 
+        // A -> pieza hacia la izquierda
+        scene.piezas[scene.piezaActual].position.x += -1;
         break;
-      case 38:
-        // Flecha hacia arriba
-        scene.piezas[scene.piezaActual].translateX(-1);
+      case 87:
+        // W -> pieza hacia delante
+        scene.piezas[scene.piezaActual].position.z += -1;
         break;
-      case 39:
-        // Flecha hacia la derecha
-        scene.piezas[scene.piezaActual].translateZ(-1);
+      case 68:
+        // D -> pieza hacia la derecha
+        scene.piezas[scene.piezaActual].position.x += 1;
         break;
-      case 40:
-        // Flecha hacia abajo
-        scene.piezas[scene.piezaActual].translateX(1);
+      case 83:
+        // S -> pieza hacia abajo
+        scene.piezas[scene.piezaActual].position.z += 1;
         break;
       case 70:
         // F ->  Rotar hacia la derecha
         scene.piezas[scene.piezaActual].rotateOnWorldAxis(new THREE.Vector3(1,0,0), -Math.PI/2);
+        scene.piezas[scene.piezaActual].worldToLocal();
         break;
       case 82:
         // R -> Rotar hacia la izquierda
         scene.piezas[scene.piezaActual].rotateOnWorldAxis(new THREE.Vector3(0,0,1), Math.PI/2);
+        scene.piezas[scene.piezaActual].worldToLocal();
+        break;
+      case 67:
+        // C -> Para cambiar la dirección de la cámara
+        scene.camera.up = new THREE.Vector3(0,scene.camera.up.y*(-1),0);
+        scene.cameraControl.rotateSpeed *= -1; // Para que gire en el sentido contrario
+        scene.camera.position.y *= -1;
+        scene.cameraControl.update();
         break;
     }
-
-    console.log(scene.piezas[scene.piezaActual].rotation);
 
   })
 
