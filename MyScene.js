@@ -58,15 +58,69 @@ class MyScene extends THREE.Scene {
     // 4 -> Positiva en el eje Z (Delante)
     // 5 -> Negativa en el eje Z (Detrás)
     this.caraActual = 0;
-    this.caraPrevia = 0;
+    this.direccionVertical = new THREE.Vector3(0,0,1);
+    this.direccionHorizontal = new THREE.Vector3(1,0,0);
+    this.direccionBajada = new THREE.Vector3(0,-1,0);
+    this.ejeRotacionDerecha = new THREE.Vector3(0,0,0);
+    this.ejeRotacionAlante = new THREE.Vector3(0,0,0);
 
-    // Tiene los mismos valores que caraActual. Será la posición en la que 
-    // actualmente ese jugador está mirando para tenerlo en cuenta a la hora de
-    // moverse
-    this.direccionCamara = 0;
+    // 1 -> Posición inicial
+    // -1 -> Posición invertida
+    this.direccionCamara = 1;
 
     // this.TPieza.moverAPuntoDeInicio(this.caraActual);
     this.generarPiezaAleatoria();
+    
+  }
+
+  generarEje(){
+
+    switch(this.caraActual){
+
+      case 0: 
+        this.direccionVertical = new THREE.Vector3(0,0,-1);
+        this.direccionHorizontal = new THREE.Vector3(1,0,0);
+        this.direccionBajada = new THREE.Vector3(0,-1,0);
+        this.ejeRotacionDerecha = new THREE.Vector3(0,0,1);
+        this.ejeRotacionAlante = new THREE.Vector3(-1,0,0);
+        break;
+      case 1: 
+        this.direccionVertical = new THREE.Vector3(1,0,0);
+        this.direccionHorizontal = new THREE.Vector3(0,0,-1);
+        this.direccionBajada = new THREE.Vector3(0,1,0);
+        this.ejeRotacionDerecha = new THREE.Vector3(-1,0,0);
+        this.ejeRotacionAlante = new THREE.Vector3(0,0,1);
+        break;
+      case 2: 
+        this.direccionVertical = new THREE.Vector3(0,1,0);
+        this.direccionHorizontal = new THREE.Vector3(0,0,-1);
+        this.direccionBajada = new THREE.Vector3(-1,0,0);
+        this.ejeRotacionDerecha = new THREE.Vector3(0,-1,0);
+        this.ejeRotacionAlante = new THREE.Vector3(0,0,1);
+        break;
+      case 3: 
+        this.direccionVertical = new THREE.Vector3(0,1,0);
+        this.direccionHorizontal = new THREE.Vector3(0,0,1);
+        this.direccionBajada = new THREE.Vector3(1,0,0);
+        this.ejeRotacionDerecha = new THREE.Vector3(0,-1,0);
+        this.ejeRotacionAlante = new THREE.Vector3(0,0,-1);
+        break;
+      case 4: 
+        this.direccionVertical = new THREE.Vector3(0,1,0);
+        this.direccionHorizontal = new THREE.Vector3(1,0,0);
+        this.direccionBajada = new THREE.Vector3(0,0,-1);
+        this.ejeRotacionDerecha = new THREE.Vector3(0,-1,0);
+        this.ejeRotacionAlante = new THREE.Vector3(-1,0,0);
+        break;
+      case 5:
+        this.direccionVertical = new THREE.Vector3(0,1,0);
+        this.direccionHorizontal = new THREE.Vector3(-1,0,0);
+        this.direccionBajada = new THREE.Vector3(0,0,1);
+        this.ejeRotacionDerecha = new THREE.Vector3(0,1,0);
+        this.ejeRotacionAlante = new THREE.Vector3(1,0,0);
+        break;
+
+    }
     
   }
 
@@ -97,10 +151,11 @@ class MyScene extends THREE.Scene {
     this.piezas.push(pieza);
     this.add(this.piezas[this.piezaActual]);
 
-    this.caraActual = getRandomInt(6);
+    // this.caraActual = getRandomInt(6);
+    this.caraActual = 1;
+    this.generarEje();
 
     this.piezas[this.piezaActual].moverAPuntoDeInicio(this.caraActual);
-
 
   }
 
@@ -241,35 +296,42 @@ $(function () {
     switch (event.keyCode){
       case 65: 
         // A -> pieza hacia la izquierda
-        scene.piezas[scene.piezaActual].position.x += -1;
+        scene.piezas[scene.piezaActual].position.x -= scene.direccionHorizontal.x*scene.direccionCamara;
+        scene.piezas[scene.piezaActual].position.y -= scene.direccionHorizontal.y*scene.direccionCamara;
+        scene.piezas[scene.piezaActual].position.z -= scene.direccionHorizontal.z*scene.direccionCamara;
         break;
       case 87:
         // W -> pieza hacia delante
-        scene.piezas[scene.piezaActual].position.z += -1;
+        scene.piezas[scene.piezaActual].position.x += scene.direccionVertical.x*scene.direccionCamara;
+        scene.piezas[scene.piezaActual].position.y += scene.direccionVertical.y*scene.direccionCamara;
+        scene.piezas[scene.piezaActual].position.z += scene.direccionVertical.z*scene.direccionCamara;
         break;
       case 68:
         // D -> pieza hacia la derecha
-        scene.piezas[scene.piezaActual].position.x += 1;
+        scene.piezas[scene.piezaActual].position.x += scene.direccionHorizontal.x*scene.direccionCamara;
+        scene.piezas[scene.piezaActual].position.y += scene.direccionHorizontal.y*scene.direccionCamara;
+        scene.piezas[scene.piezaActual].position.z += scene.direccionHorizontal.z*scene.direccionCamara;
         break;
       case 83:
         // S -> pieza hacia abajo
-        scene.piezas[scene.piezaActual].position.z += 1;
+        scene.piezas[scene.piezaActual].position.x -= scene.direccionVertical.x*scene.direccionCamara;
+        scene.piezas[scene.piezaActual].position.y -= scene.direccionVertical.y*scene.direccionCamara;
+        scene.piezas[scene.piezaActual].position.z -= scene.direccionVertical.z*scene.direccionCamara;
         break;
       case 70:
         // F ->  Rotar hacia la derecha
-        scene.piezas[scene.piezaActual].rotateOnWorldAxis(new THREE.Vector3(1,0,0), -Math.PI/2);
-        console.log(scene.piezas[scene.piezaActual].up);
+        scene.piezas[scene.piezaActual].rotateOnWorldAxis(new THREE.Vector3(scene.ejeRotacionDerecha.x*scene.direccionCamara, scene.ejeRotacionDerecha.y*scene.direccionCamara, scene.ejeRotacionDerecha.z*scene.direccionCamara ), -Math.PI/2);
         break;
       case 82:
-        // R -> Rotar hacia la izquierda
-        scene.piezas[scene.piezaActual].rotateOnWorldAxis(new THREE.Vector3(0,0,1), Math.PI/2);
-        console.log(scene.piezas[scene.piezaActual].up);
+        // R -> Rotar hacia alante
+        scene.piezas[scene.piezaActual].rotateOnWorldAxis(new THREE.Vector3(scene.ejeRotacionAlante.x*scene.direccionCamara, scene.ejeRotacionAlante.y*scene.direccionCamara, scene.ejeRotacionAlante.z*scene.direccionCamara ), Math.PI/2);
         break;
       case 67:
         // C -> Para cambiar la dirección de la cámara
         scene.camera.up = new THREE.Vector3(0,scene.camera.up.y*(-1),0);
         scene.cameraControl.rotateSpeed *= -1; // Para que gire en el sentido contrario
-        scene.camera.position.y *= -1;
+        scene.camera.position.y *= -1; // Para que la camara a pesar de girar siga mostrando aparentemente lo mismo
+        scene.direccionCamara *= -1;
         scene.cameraControl.update();
         break;
     }
