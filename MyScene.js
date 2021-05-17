@@ -35,8 +35,7 @@ class MyScene extends THREE.Scene {
     this.add(this.tablero);
 
     // Vector de piezas
-    this.piezaActual = -1;
-    this.piezas = [];
+    this.piezaActual = undefined;
 
     // Para tener en cuenta en que cara se encuentra el jugador
     // en todo momento
@@ -65,7 +64,7 @@ class MyScene extends THREE.Scene {
     this.generarPiezaAleatoria();
   
     // Cajas para derectar colisiones entre objetos (solo cuando siguen una estructura cuadrada)
-    this.boxPieza = new THREE.Box3().setFromObject(this.piezas[this.piezaActual]);
+    this.boxPieza = new THREE.Box3().setFromObject(this.piezaActual);
     this.helperPieza = new THREE.Box3Helper(this.boxPieza, 0xff0000);
     this.add(this.helperPieza);
 
@@ -154,26 +153,25 @@ class MyScene extends THREE.Scene {
         break;
     }
 
-    this.piezaActual = this.piezas.length;
-    this.piezas.push(pieza);
-    this.add(this.piezas[this.piezaActual]);
 
+    this.piezaActual = pieza;
+    this.add(this.piezaActual);
 
-    this.piezas[this.piezaActual].moverAPuntoDeInicio(this.caraActual);
+    this.piezaActual.moverAPuntoDeInicio(this.caraActual);
 
   }
 
   colision () {
 
-    this.piezas[this.piezaActual].stop();
-    const posicion = this.piezas[this.piezaActual].position.clone();
-    this.piezas[this.piezaActual].position.set( Math.round(posicion.x), Math.round(posicion.y), Math.round(posicion.z) )
+    this.piezaActual.stop();
+    const posicion = this.piezaActual.position.clone();
+    this.piezaActual.position.set( Math.round(posicion.x), Math.round(posicion.y), Math.round(posicion.z) )
     
   }
 
   fueraTablero () {
 
-    this.boxPieza.setFromObject(this.piezas[this.piezaActual]);
+    this.boxPieza.setFromObject(this.piezaActual);
     console.log(this.caraActual);
 
     if(this.caraActual == 0 || this.caraActual == 1){
@@ -194,10 +192,10 @@ class MyScene extends THREE.Scene {
   fueraLimitesX(){
 
     if( this.boxPieza.max.x > 5 ){
-      this.piezas[this.piezaActual].position.x -= (this.boxPieza.max.x - 5);
+      this.piezaActual.position.x -= (this.boxPieza.max.x - 5);
     }
     else if( this.boxPieza.min.x < -5 ){
-      this.piezas[this.piezaActual].position.x += (-5 - this.boxPieza.min.x);
+      this.piezaActual.position.x += (-5 - this.boxPieza.min.x);
     }
     
   }
@@ -205,10 +203,10 @@ class MyScene extends THREE.Scene {
   fueraLimitesY(){
 
     if( this.boxPieza.max.y > 5 ){
-      this.piezas[this.piezaActual].position.y -= (this.boxPieza.max.y - 5);
+      this.piezaActual.position.y -= (this.boxPieza.max.y - 5);
     }
     else if( this.boxPieza.min.y < -5 ){
-      this.piezas[this.piezaActual].position.y += (-5 - this.boxPieza.min.y);
+      this.piezaActual.position.y += (-5 - this.boxPieza.min.y);
     }
 
   }
@@ -216,10 +214,10 @@ class MyScene extends THREE.Scene {
   fueraLimitesZ(){
 
     if( this.boxPieza.max.z > 5 ){
-      this.piezas[this.piezaActual].position.z -= (this.boxPieza.max.z - 5);
+      this.piezaActual.position.z -= (this.boxPieza.max.z - 5);
     }
     else if( this.boxPieza.min.z < -5 ){
-      this.piezas[this.piezaActual].position.z += (-5 - this.boxPieza.min.z);
+      this.piezaActual.position.z += (-5 - this.boxPieza.min.z);
     }
   }
 
@@ -302,7 +300,7 @@ class MyScene extends THREE.Scene {
     this.renderer.render(this, this.getCamera());
 
     // Modifica la luz que sale de la pieza a la posición de la pieza
-    this.pointLight.position.set(this.piezas[this.piezaActual].position.x, this.piezas[this.piezaActual].position.y, this.piezas[this.piezaActual].position.z);
+    this.pointLight.position.set(this.piezaActual.position.x, this.piezaActual.position.y, this.piezaActual.position.z);
 
     // Se actualiza la posición de la cámara según su controlador
     this.cameraControl.update();
@@ -311,12 +309,12 @@ class MyScene extends THREE.Scene {
     // ACTUALIZACIÓN DE MODELOS
     // --------------------------------------
     this.tablero.update();
-    this.piezas[this.piezaActual].update();
-    // this.piezas[this.piezaActual].actualizarRayos();
-    this.boxPieza.setFromObject(this.piezas[this.piezaActual]);
+    this.piezaActual.update();
+    // this.piezaActual.actualizarRayos();
+    this.boxPieza.setFromObject(this.piezaActual);
 
-    // if(this.boxPieza.intersectsBox(this.boxTablero) && this.piezas[this.piezaActual].movimiento)
-    if( this.piezas[this.piezaActual].movimiento && this.piezas[this.piezaActual].checkColision(this.tablero))
+    // if(this.boxPieza.intersectsBox(this.boxTablero) && this.piezaActual.movimiento)
+    if( this.piezaActual.movimiento && this.piezaActual.checkColision(this.tablero))
       this.colision();
     
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
@@ -339,43 +337,43 @@ $(function () {
     switch (event.keyCode){
       case 65: 
         // A -> pieza hacia la izquierda
-        scene.piezas[scene.piezaActual].position.x -= scene.direccionHorizontal.x*scene.direccionCamara;
-        scene.piezas[scene.piezaActual].position.y -= scene.direccionHorizontal.y*scene.direccionCamara;
-        scene.piezas[scene.piezaActual].position.z -= scene.direccionHorizontal.z*scene.direccionCamara;
+        scene.piezaActual.position.x -= scene.direccionHorizontal.x*scene.direccionCamara;
+        scene.piezaActual.position.y -= scene.direccionHorizontal.y*scene.direccionCamara;
+        scene.piezaActual.position.z -= scene.direccionHorizontal.z*scene.direccionCamara;
         scene.fueraTablero();
         break;
       case 87:
         // W -> pieza hacia delante
-        scene.piezas[scene.piezaActual].position.x += scene.direccionVertical.x*scene.direccionCamara;
-        scene.piezas[scene.piezaActual].position.y += scene.direccionVertical.y*scene.direccionCamara;
-        scene.piezas[scene.piezaActual].position.z += scene.direccionVertical.z*scene.direccionCamara;
+        scene.piezaActual.position.x += scene.direccionVertical.x*scene.direccionCamara;
+        scene.piezaActual.position.y += scene.direccionVertical.y*scene.direccionCamara;
+        scene.piezaActual.position.z += scene.direccionVertical.z*scene.direccionCamara;
         scene.fueraTablero();
         break;
       case 68:
         // D -> pieza hacia la derecha
-        scene.piezas[scene.piezaActual].position.x += scene.direccionHorizontal.x*scene.direccionCamara;
-        scene.piezas[scene.piezaActual].position.y += scene.direccionHorizontal.y*scene.direccionCamara;
-        scene.piezas[scene.piezaActual].position.z += scene.direccionHorizontal.z*scene.direccionCamara;
+        scene.piezaActual.position.x += scene.direccionHorizontal.x*scene.direccionCamara;
+        scene.piezaActual.position.y += scene.direccionHorizontal.y*scene.direccionCamara;
+        scene.piezaActual.position.z += scene.direccionHorizontal.z*scene.direccionCamara;
         scene.fueraTablero();
         break;
       case 83:
         // S -> pieza hacia abajo
-        scene.piezas[scene.piezaActual].position.x -= scene.direccionVertical.x*scene.direccionCamara;
-        scene.piezas[scene.piezaActual].position.y -= scene.direccionVertical.y*scene.direccionCamara;
-        scene.piezas[scene.piezaActual].position.z -= scene.direccionVertical.z*scene.direccionCamara;
+        scene.piezaActual.position.x -= scene.direccionVertical.x*scene.direccionCamara;
+        scene.piezaActual.position.y -= scene.direccionVertical.y*scene.direccionCamara;
+        scene.piezaActual.position.z -= scene.direccionVertical.z*scene.direccionCamara;
         scene.fueraTablero();
         break;
       case 70:
         // F ->  Rotar hacia la derecha
-        scene.piezas[scene.piezaActual].rotateOnWorldAxis(new THREE.Vector3(scene.ejeRotacionDerecha.x*scene.direccionCamara, scene.ejeRotacionDerecha.y*scene.direccionCamara, scene.ejeRotacionDerecha.z*scene.direccionCamara ), -Math.PI/2);
+        scene.piezaActual.rotateOnWorldAxis(new THREE.Vector3(scene.ejeRotacionDerecha.x*scene.direccionCamara, scene.ejeRotacionDerecha.y*scene.direccionCamara, scene.ejeRotacionDerecha.z*scene.direccionCamara ), -Math.PI/2);
         scene.fueraTablero();
-        console.log(scene.piezas[scene.piezaActual].children[0].geometry.boundingBox);
+        console.log(scene.piezaActual.children[0].geometry.boundingBox);
         break;
       case 82:
         // R -> Rotar hacia alante
-        scene.piezas[scene.piezaActual].rotateOnWorldAxis(new THREE.Vector3(scene.ejeRotacionAlante.x*scene.direccionCamara, scene.ejeRotacionAlante.y*scene.direccionCamara, scene.ejeRotacionAlante.z*scene.direccionCamara ), Math.PI/2);
+        scene.piezaActual.rotateOnWorldAxis(new THREE.Vector3(scene.ejeRotacionAlante.x*scene.direccionCamara, scene.ejeRotacionAlante.y*scene.direccionCamara, scene.ejeRotacionAlante.z*scene.direccionCamara ), Math.PI/2);
         scene.fueraTablero();
-        console.log(scene.piezas[scene.piezaActual].children[0].geometry.boundingBox);
+        console.log(scene.piezaActual.children[0].geometry.boundingBox);
         break;
       case 67:
         // C -> Para cambiar la dirección de la cámara
