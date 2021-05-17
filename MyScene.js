@@ -27,6 +27,7 @@ class MyScene extends THREE.Scene {
     // Ejes para facilitar el desarrollo
     this.axis = new THREE.AxesHelper(30);
     this.add(this.axis);
+    this.axis.visible = false;
 
     // ---------------------------------------------
     // Modelos creados para la escena
@@ -59,6 +60,7 @@ class MyScene extends THREE.Scene {
     
     // Para gestionar los niveles y las bajadas
     this.nivel = 1;
+    this.puntuacion = 0;
     this.segundosBajada = 7;
     
     this.generarPiezaAleatoria();
@@ -67,10 +69,12 @@ class MyScene extends THREE.Scene {
     this.boxPieza = new THREE.Box3().setFromObject(this.piezaActual);
     this.helperPieza = new THREE.Box3Helper(this.boxPieza, 0xff0000);
     this.add(this.helperPieza);
+    this.helperPieza.visible = false;
 
     this.boxTablero = new THREE.Box3().setFromObject(this.tablero);
     this.helperTablero = new THREE.Box3Helper(this.boxTablero, 0xff0000);
     this.add(this.helperTablero);
+    this.helperTablero.visible = false;
 
     // Bloques en el tablero
     this.bloquesTablero = new Array(6).fill(new THREE.Object3D());
@@ -83,6 +87,8 @@ class MyScene extends THREE.Scene {
 
     // Variable para iniciar al pulsar hacia delante
     this.jugando = false;
+    this.crearPantallas();
+
   }
 
   generarEje(){
@@ -138,6 +144,10 @@ class MyScene extends THREE.Scene {
 
   generarPiezaAleatoria() {
 
+    this.puntuacion++;
+    if(this.puntuacion%10 == 0)
+      this.siguienteNivel();
+
     const tipo = getRandomInt(5);
     let pieza = undefined;
     
@@ -186,12 +196,13 @@ class MyScene extends THREE.Scene {
     }
     else{
       console.log('Game Over');
+      this.jugando = false;
       this.gameOver();
     }
 
   }
 
-  gameOver(){
+  crearPantallas() {
 
     var geo1 = new THREE.PlaneGeometry(20, 11.22);
     var geo2 = new THREE.PlaneGeometry(20, 11.22);
@@ -200,9 +211,7 @@ class MyScene extends THREE.Scene {
     var geo5 = new THREE.PlaneGeometry(20, 11.22);
     var geo6 = new THREE.PlaneGeometry(20, 11.22);
 
-    const loader = new THREE.TextureLoader();
-    const textura = loader.load('texturas/gameover.jpg');
-    const material = new THREE.MeshBasicMaterial({color: 0xFFFF00, map: textura});
+    const material = new THREE.MeshBasicMaterial({ color: 0x000000 })
 
     this.pantallas = new THREE.Object3D();
 
@@ -238,6 +247,42 @@ class MyScene extends THREE.Scene {
     this.pantallas.add(m6);
 
     this.add(this.pantallas);
+    this.pantallas.visible = false;
+
+  }
+
+  siguienteNivel() {
+
+    this.nivel++;
+    this.segundosBajada*0.9;
+
+    const loader = new THREE.TextureLoader();
+    const textura = loader.load('texturas/next_level.jpg');
+    const material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, map: textura});
+
+    this.pantallas.traverse( ( obj ) => {
+      obj.material = material;
+    })
+
+    this.pantallas.visible = true;
+
+    setTimeout( () => {
+      this.pantallas.visible = false;
+    }, 2000);
+
+  }
+
+  gameOver(){
+
+    const loader = new THREE.TextureLoader();
+    const textura = loader.load('texturas/gameover.jpg');
+    const material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, map: textura});
+
+    this.pantallas.traverse( ( obj ) => {
+      obj.material = material;
+    })
+
+    this.pantallas.visible = true;
 
   }
 
@@ -335,15 +380,24 @@ class MyScene extends THREE.Scene {
   createGUI() {
     
     var gui = new GUI();
+
+
     this.guiControls = new function () {
       // En el contexto de una función   this   alude a la función
-      this.axisOnOff = true;
+      this.axisOnOff = false;
+      this.limits = false;
     }
-
-    // Ejes
-    var folder = gui.addFolder('Ejes');
-    folder.add(this.guiControls, 'axisOnOff').name('Mostrar ejes : ');
-
+    
+    var folder = gui.addFolder('Debug');
+    folder.add(this.guiControls, 'axisOnOff').name('Mostrar ejes : ').listen().onChange((axisOnOff) => {
+      this.axis.visible = axisOnOff;
+    });
+    
+    folder.add(this.guiControls, 'limits').name('Mostrar límites : ').listen().onChange((limits) => {
+      this.helperPieza.visible = limits;
+      this.helperTablero.visible = limits;
+    });
+    
     return gui;
   
   }
@@ -386,9 +440,6 @@ class MyScene extends THREE.Scene {
   }
 
   update() {
-    
-    // Se muestran o no los ejes según lo que idique la GUI
-    this.axis.visible = this.guiControls.axisOnOff;
 
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render(this, this.getCamera());
