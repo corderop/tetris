@@ -40,7 +40,8 @@ class Cubo extends Pieza {
   
     for( let i=0; i < this.rayos.length && !colision; i++){
       var salida = this.rayos[i].intersectObject(objeto, true);
-      colision = ( salida[0].distance < 1 );
+      if(salida.length)
+        colision = ( salida[0].distance < 1 );
     }
 
     return colision;

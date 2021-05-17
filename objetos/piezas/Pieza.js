@@ -43,7 +43,8 @@ class Pieza extends THREE.Object3D {
   
     for( let i=0; i < this.rayos.length && !colision; i++){
       var salida = this.rayos[i].intersectObject(objeto, true);
-      colision = ( salida[0].distance < 0.5 );
+      if(salida.length)
+        colision = ( salida[0].distance < 0.5 );
     }
 
     return colision;

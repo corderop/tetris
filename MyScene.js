@@ -72,6 +72,15 @@ class MyScene extends THREE.Scene {
     this.helperTablero = new THREE.Box3Helper(this.boxTablero, 0xff0000);
     this.add(this.helperTablero);
 
+    // Blocks on board
+    this.bloquesTablero = new Array(6).fill(new THREE.Object3D());
+    this.add(this.bloquesTablero[0]);
+    this.add(this.bloquesTablero[1]);
+    this.add(this.bloquesTablero[2]);
+    this.add(this.bloquesTablero[3]);
+    this.add(this.bloquesTablero[4]);
+    this.add(this.bloquesTablero[5]);
+
   }
 
   generarEje(){
@@ -127,12 +136,12 @@ class MyScene extends THREE.Scene {
 
   generarPiezaAleatoria() {
 
-    const tipo = getRandomInt(5);
-    // const tipo = 0;
+    // const tipo = getRandomInt(5);
+    const tipo = 2;
     let pieza = undefined;
     
-    this.caraActual = getRandomInt(6);
-    // this.caraActual = 0;
+    // this.caraActual = getRandomInt(6);
+    this.caraActual = 3;
     this.generarEje();
 
     switch (tipo){
@@ -167,6 +176,40 @@ class MyScene extends THREE.Scene {
     const posicion = this.piezaActual.position.clone();
     this.piezaActual.position.set( Math.round(posicion.x), Math.round(posicion.y), Math.round(posicion.z) )
     
+    this.bloquesTablero[this.caraActual].attach(this.piezaActual);
+    this.remove(this.piezaActual);
+    
+    var box = new THREE.Box3().setFromObject(this.bloquesTablero[this.caraActual]);
+
+    if(!this.checkGameOver(box)){
+      this.generarPiezaAleatoria();
+    }
+    else{
+      console.log('Game Over');
+    }
+
+  }
+
+  checkGameOver(box){
+
+    switch(this.caraActual){
+
+      case 0: 
+        return ( box.max.y > 20 );
+      case 1: 
+        return ( box.min.y < -20 );
+      case 2: 
+        return ( box.max.x > 20 );
+      case 3: 
+        return ( box.min.x < -20 );
+      case 4: 
+        return ( box.max.z > 20 );
+      case 5:
+        return ( box.min.z < -20 );
+
+    }
+    
+
   }
 
   fueraTablero () {
@@ -314,7 +357,7 @@ class MyScene extends THREE.Scene {
     this.boxPieza.setFromObject(this.piezaActual);
 
     // if(this.boxPieza.intersectsBox(this.boxTablero) && this.piezaActual.movimiento)
-    if( this.piezaActual.movimiento && this.piezaActual.checkColision(this.tablero))
+    if( this.piezaActual.movimiento && ( this.piezaActual.checkColision(this.tablero) || this.piezaActual.checkColision(this.bloquesTablero[this.caraActual]) ))
       this.colision();
     
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
