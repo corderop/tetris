@@ -72,7 +72,7 @@ class MyScene extends THREE.Scene {
     this.helperTablero = new THREE.Box3Helper(this.boxTablero, 0xff0000);
     this.add(this.helperTablero);
 
-    // Blocks on board
+    // Bloques en el tablero
     this.bloquesTablero = new Array(6).fill(new THREE.Object3D());
     this.add(this.bloquesTablero[0]);
     this.add(this.bloquesTablero[1]);
@@ -81,6 +81,8 @@ class MyScene extends THREE.Scene {
     this.add(this.bloquesTablero[4]);
     this.add(this.bloquesTablero[5]);
 
+    // Variable para iniciar al pulsar hacia delante
+    this.jugando = false;
   }
 
   generarEje(){
@@ -136,12 +138,10 @@ class MyScene extends THREE.Scene {
 
   generarPiezaAleatoria() {
 
-    // const tipo = getRandomInt(5);
-    const tipo = 2;
+    const tipo = getRandomInt(5);
     let pieza = undefined;
     
-    // this.caraActual = getRandomInt(6);
-    this.caraActual = 3;
+    this.caraActual = getRandomInt(6);
     this.generarEje();
 
     switch (tipo){
@@ -186,7 +186,58 @@ class MyScene extends THREE.Scene {
     }
     else{
       console.log('Game Over');
+      this.gameOver();
     }
+
+  }
+
+  gameOver(){
+
+    var geo1 = new THREE.PlaneGeometry(20, 11.22);
+    var geo2 = new THREE.PlaneGeometry(20, 11.22);
+    var geo3 = new THREE.PlaneGeometry(20, 11.22);
+    var geo4 = new THREE.PlaneGeometry(20, 11.22);
+    var geo5 = new THREE.PlaneGeometry(20, 11.22);
+    var geo6 = new THREE.PlaneGeometry(20, 11.22);
+
+    const loader = new THREE.TextureLoader();
+    const textura = loader.load('texturas/gameover.jpg');
+    const material = new THREE.MeshBasicMaterial({color: 0xFFFF00, map: textura});
+
+    this.pantallas = new THREE.Object3D();
+
+    geo1.translate(0, 0, -50);
+
+    geo2.rotateY(Math.PI);
+    geo2.translate(0, 0, 50);
+
+    geo3.rotateY(-Math.PI/2);
+    geo3.translate(50, 0, 0);
+
+    geo4.rotateY(Math.PI/2);
+    geo4.translate(-50, 0, 0);
+
+    geo5.rotateX(-Math.PI/2);
+    geo5.translate(0, -50, 0);
+
+    geo6.rotateX(Math.PI/2);
+    geo6.translate(0, 50, 0);
+
+    var m1 = new THREE.Mesh(geo1, material);
+    var m2 = new THREE.Mesh(geo2, material);
+    var m3 = new THREE.Mesh(geo3, material);
+    var m4 = new THREE.Mesh(geo4, material);
+    var m5 = new THREE.Mesh(geo5, material);
+    var m6 = new THREE.Mesh(geo6, material);
+
+    this.pantallas.add(m1);
+    this.pantallas.add(m2);
+    this.pantallas.add(m3);
+    this.pantallas.add(m4);
+    this.pantallas.add(m5);
+    this.pantallas.add(m6);
+
+    this.add(this.pantallas);
 
   }
 
@@ -351,14 +402,17 @@ class MyScene extends THREE.Scene {
     // --------------------------------------
     // ACTUALIZACIÓN DE MODELOS
     // --------------------------------------
-    this.tablero.update();
-    this.piezaActual.update();
-    // this.piezaActual.actualizarRayos();
-    this.boxPieza.setFromObject(this.piezaActual);
+    if(this.jugando){
 
-    // if(this.boxPieza.intersectsBox(this.boxTablero) && this.piezaActual.movimiento)
-    if( this.piezaActual.movimiento && ( this.piezaActual.checkColision(this.tablero) || this.piezaActual.checkColision(this.bloquesTablero[this.caraActual]) ))
-      this.colision();
+      this.tablero.update();
+      this.piezaActual.update();
+      // this.piezaActual.actualizarRayos();
+      this.boxPieza.setFromObject(this.piezaActual);
+
+      if( this.piezaActual.movimiento && ( this.piezaActual.checkColision(this.tablero) || this.piezaActual.checkColision(this.bloquesTablero[this.caraActual]) ))
+        this.colision();
+    
+    }  
     
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
@@ -387,6 +441,7 @@ $(function () {
         break;
       case 87:
         // W -> pieza hacia delante
+        scene.jugando = true;
         scene.piezaActual.position.x += scene.direccionVertical.x*scene.direccionCamara;
         scene.piezaActual.position.y += scene.direccionVertical.y*scene.direccionCamara;
         scene.piezaActual.position.z += scene.direccionVertical.z*scene.direccionCamara;
