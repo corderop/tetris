@@ -10,11 +10,44 @@ class Pieza extends THREE.Object3D {
     this.direccionBajada = direccionBajada;
     this.tiempo = new THREE.Clock();
     this.movimiento = true;
-    
+    this.rayos = [];
+
   }
   
   stop() {
     this.movimiento = false;
+  }
+
+  actualizarRayos () {
+
+    this.actualizarBox();
+
+    this.rayos = [];
+
+    for( let i=0; i < this.box.length; i++){
+      let posicion = new THREE.Vector3(
+        this.box[i].min.x + (this.box[i].max.x-this.box[i].min.x)/2 ,
+        this.box[i].min.y + (this.box[i].max.y-this.box[i].min.y)/2 ,
+        this.box[i].min.z + (this.box[i].max.z-this.box[i].min.z)/2
+      );
+      this.rayos.push(new THREE.Raycaster(posicion, this.direccionBajada, 0, 30 ) );
+    }
+    
+  }
+
+  checkColision (objeto) {
+
+    this.actualizarRayos();
+
+    let colision = false;
+  
+    for( let i=0; i < this.rayos.length && !colision; i++){
+      var salida = this.rayos[i].intersectObject(objeto, true);
+      colision = ( salida[0].distance < 0.5 );
+    }
+
+    return colision;
+
   }
 
   update() {

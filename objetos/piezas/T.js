@@ -30,6 +30,21 @@ class T extends Pieza {
     const mesh4 = new THREE.Mesh( geometryCubo4, material );
     this.add(mesh4);
 
+    this.box = new Array(4); 
+    this.box[0] = new THREE.Box3().setFromObject(mesh1);
+    this.box[1] = new THREE.Box3().setFromObject(mesh2);
+    this.box[2] = new THREE.Box3().setFromObject(mesh3);
+    this.box[3] = new THREE.Box3().setFromObject(mesh4);
+    
+  }
+
+  actualizarBox () {
+
+    this.box[0].setFromObject(this.children[0]);
+    this.box[1].setFromObject(this.children[1]);
+    this.box[2].setFromObject(this.children[2]);
+    this.box[3].setFromObject(this.children[3]);
+
   }
 
   moverAPuntoDeInicio(cara){

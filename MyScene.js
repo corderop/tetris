@@ -73,9 +73,6 @@ class MyScene extends THREE.Scene {
     this.helperTablero = new THREE.Box3Helper(this.boxTablero, 0xff0000);
     this.add(this.helperTablero);
 
-    console.log(this.boxPieza);
-    console.log(this.boxTablero);
-
   }
 
   generarEje(){
@@ -131,12 +128,12 @@ class MyScene extends THREE.Scene {
 
   generarPiezaAleatoria() {
 
-    // const tipo = getRandomInt(5);
-    const tipo = 2;
+    const tipo = getRandomInt(5);
+    // const tipo = 0;
     let pieza = undefined;
     
-    // this.caraActual = getRandomInt(6);
-    this.caraActual = 0;
+    this.caraActual = getRandomInt(6);
+    // this.caraActual = 0;
     this.generarEje();
 
     switch (tipo){
@@ -161,6 +158,7 @@ class MyScene extends THREE.Scene {
     this.piezas.push(pieza);
     this.add(this.piezas[this.piezaActual]);
 
+
     this.piezas[this.piezaActual].moverAPuntoDeInicio(this.caraActual);
 
   }
@@ -170,8 +168,7 @@ class MyScene extends THREE.Scene {
     this.piezas[this.piezaActual].stop();
     const posicion = this.piezas[this.piezaActual].position.clone();
     this.piezas[this.piezaActual].position.set( Math.round(posicion.x), Math.round(posicion.y), Math.round(posicion.z) )
-    // this.generarPiezaAleatoria();
-
+    
   }
 
   fueraTablero () {
@@ -315,13 +312,13 @@ class MyScene extends THREE.Scene {
     // --------------------------------------
     this.tablero.update();
     this.piezas[this.piezaActual].update();
+    // this.piezas[this.piezaActual].actualizarRayos();
     this.boxPieza.setFromObject(this.piezas[this.piezaActual]);
 
-    if(this.boxPieza.intersectsBox(this.boxTablero))
+    // if(this.boxPieza.intersectsBox(this.boxTablero) && this.piezas[this.piezaActual].movimiento)
+    if( this.piezas[this.piezaActual].movimiento && this.piezas[this.piezaActual].checkColision(this.tablero))
       this.colision();
-
-    // this.fueraTablero();
-
+    
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
     // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
@@ -372,11 +369,13 @@ $(function () {
         // F ->  Rotar hacia la derecha
         scene.piezas[scene.piezaActual].rotateOnWorldAxis(new THREE.Vector3(scene.ejeRotacionDerecha.x*scene.direccionCamara, scene.ejeRotacionDerecha.y*scene.direccionCamara, scene.ejeRotacionDerecha.z*scene.direccionCamara ), -Math.PI/2);
         scene.fueraTablero();
+        console.log(scene.piezas[scene.piezaActual].children[0].geometry.boundingBox);
         break;
       case 82:
         // R -> Rotar hacia alante
         scene.piezas[scene.piezaActual].rotateOnWorldAxis(new THREE.Vector3(scene.ejeRotacionAlante.x*scene.direccionCamara, scene.ejeRotacionAlante.y*scene.direccionCamara, scene.ejeRotacionAlante.z*scene.direccionCamara ), Math.PI/2);
         scene.fueraTablero();
+        console.log(scene.piezas[scene.piezaActual].children[0].geometry.boundingBox);
         break;
       case 67:
         // C -> Para cambiar la dirección de la cámara

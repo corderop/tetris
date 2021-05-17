@@ -20,6 +20,31 @@ class Cubo extends Pieza {
     const mesh = new THREE.Mesh( geometryCubo, material );
     this.add(mesh);
     
+    this.box = new Array(1); 
+    this.box[0] = new THREE.Box3().setFromObject(mesh);
+    
+  }
+
+  actualizarBox () {
+
+    this.box[0].setFromObject(this);
+
+  }
+
+  // Sobreescribe el método ya que este tiene una altura diferente
+  checkColision (objeto) {
+
+    this.actualizarRayos();
+
+    let colision = false;
+  
+    for( let i=0; i < this.rayos.length && !colision; i++){
+      var salida = this.rayos[i].intersectObject(objeto, true);
+      colision = ( salida[0].distance < 1 );
+    }
+
+    return colision;
+
   }
 
   moverAPuntoDeInicio(cara){
