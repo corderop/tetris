@@ -2,8 +2,8 @@ import * as THREE from '../../libs/three.module.js'
 import { Pieza } from './Pieza.js';
 
 class T extends Pieza {
-  constructor() {
-    super();
+  constructor(direccionBajada, segundos) {
+    super(direccionBajada, segundos);
 
     // Textura
     const loader = new THREE.TextureLoader();
@@ -60,12 +60,8 @@ class T extends Pieza {
         break;
     } 
  
-  } 
-
-
-  update() {
-    
   }
+
 }
 
 export { T };

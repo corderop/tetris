@@ -2,10 +2,10 @@ import * as THREE from '../../libs/three.module.js'
 import { Pieza } from './Pieza.js';
 
 class Cubo extends Pieza {
-  constructor() {
+  constructor(direccionBajada, segundos) {
 
-    super();
-
+    super(direccionBajada, segundos);
+    
     // Textura
     const loader = new THREE.TextureLoader();
     const textura = loader.load('../../texturas/textura_cuadrada.png');
@@ -13,13 +13,13 @@ class Cubo extends Pieza {
     textura.wrapT = THREE.RepeatWrapping;
     textura.repeat.set(2,2);
     const material = new THREE.MeshBasicMaterial({color: 0xFFFF00, map: textura});
-  
+    
     // Geometrías
     const geometryCubo = new THREE.BoxBufferGeometry(2,2,2);
     
     const mesh = new THREE.Mesh( geometryCubo, material );
     this.add(mesh);
-
+    
   }
 
   moverAPuntoDeInicio(cara){
@@ -46,10 +46,7 @@ class Cubo extends Pieza {
     } 
  
   } 
-
-  update() {
-    
-  }
+  
 }
 
 export { Cubo };
