@@ -273,7 +273,7 @@ class MyScene extends THREE.Scene {
   siguienteNivel() {
 
     this.nivel++;
-    this.segundosBajada*0.9;
+    this.segundosBajada *= 0.8;
 
     const loader = new THREE.TextureLoader();
     const textura = loader.load('texturas/next_level.jpg');
@@ -330,7 +330,6 @@ class MyScene extends THREE.Scene {
   fueraTablero () {
 
     this.boxPieza.setFromObject(this.piezaActual);
-    console.log(this.caraActual);
 
     if(this.caraActual == 0 || this.caraActual == 1){
       this.fueraLimitesX();
@@ -535,13 +534,11 @@ $(function () {
         // F ->  Rotar hacia la derecha
         scene.piezaActual.rotateOnWorldAxis(new THREE.Vector3(scene.ejeRotacionDerecha.x*scene.direccionCamara, scene.ejeRotacionDerecha.y*scene.direccionCamara, scene.ejeRotacionDerecha.z*scene.direccionCamara ), -Math.PI/2);
         scene.fueraTablero();
-        console.log(scene.piezaActual.children[0].geometry.boundingBox);
         break;
       case 82:
         // R -> Rotar hacia alante
         scene.piezaActual.rotateOnWorldAxis(new THREE.Vector3(scene.ejeRotacionAlante.x*scene.direccionCamara, scene.ejeRotacionAlante.y*scene.direccionCamara, scene.ejeRotacionAlante.z*scene.direccionCamara ), Math.PI/2);
         scene.fueraTablero();
-        console.log(scene.piezaActual.children[0].geometry.boundingBox);
         break;
       case 67:
         // C -> Para cambiar la dirección de la cámara
@@ -554,7 +551,6 @@ $(function () {
       case 86:
         // V -> Para cambiar de pieza
         if(scene.cambioPieza){
-          console.log('hola');
           scene.generarPiezaAleatoria(true);
         }
 
