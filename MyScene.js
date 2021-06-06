@@ -67,7 +67,7 @@ class MyScene extends THREE.Scene {
     this.puntuacion = 0;
     this.segundosBajada = 7;
     
-    this.generarPiezaAleatoria();
+    this.generarPiezaAleatoria(false);
   
     // Cajas para derectar colisiones entre objetos (solo cuando siguen una estructura cuadrada)
     this.boxPieza = new THREE.Box3().setFromObject(this.piezaActual);
@@ -92,6 +92,10 @@ class MyScene extends THREE.Scene {
     // Variable para iniciar al pulsar hacia delante
     this.jugando = false;
     this.crearPantallas();
+
+    // Variable para gestionar los cambios de piezas
+    // Solo se podrá hacer un cambio de pieza hasta que no se coloque una
+    this.cambioPieza = true;
 
   }
 
@@ -146,17 +150,28 @@ class MyScene extends THREE.Scene {
     
   }
 
-  generarPiezaAleatoria() {
+  generarPiezaAleatoria(cambiarPieza) {
 
-    this.puntuacion++;
-    if(this.puntuacion%10 == 0)
-      this.siguienteNivel();
+    if(cambiarPieza){
+      this.cambioPieza = false;
+    }
+    else{
+      this.cambioPieza = true;
+      this.puntuacion++;
+      if(this.puntuacion%10 == 0)
+        this.siguienteNivel();
+    }
 
     const tipo = getRandomInt(5);
     let pieza = undefined;
     
-    this.caraActual = getRandomInt(6);
-    this.generarEje();
+    if(!cambiarPieza){
+      this.caraActual = getRandomInt(6);
+      this.generarEje();
+    }
+    else{
+      this.remove(this.piezaActual);
+    }
 
     switch (tipo){
       case 0:
@@ -196,7 +211,7 @@ class MyScene extends THREE.Scene {
     var box = new THREE.Box3().setFromObject(this.bloquesTablero[this.caraActual]);
 
     if(!this.checkGameOver(box)){
-      this.generarPiezaAleatoria();
+      this.generarPiezaAleatoria(false);
     }
     else{
       console.log('Game Over');
@@ -485,7 +500,7 @@ $(function () {
   window.addEventListener("resize", () => scene.onWindowResize());
 
   window.addEventListener("keyup", (event) => {
-    console.log(event);
+
     switch (event.keyCode){
       case 65: 
         // A -> pieza hacia la izquierda
@@ -535,6 +550,14 @@ $(function () {
         scene.camera.position.y *= -1; // Para que la camara a pesar de girar siga mostrando aparentemente lo mismo
         scene.direccionCamara *= -1;
         scene.cameraControl.update();
+        break;
+      case 86:
+        // V -> Para cambiar de pieza
+        if(scene.cambioPieza){
+          console.log('hola');
+          scene.generarPiezaAleatoria(true);
+        }
+
         break;
     }
 
