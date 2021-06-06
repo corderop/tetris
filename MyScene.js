@@ -65,7 +65,7 @@ class MyScene extends THREE.Scene {
     // Para gestionar los niveles y las bajadas
     this.nivel = 1;
     this.puntuacion = 0;
-    this.segundosBajada = 7;
+    this.segundosBajada = 1;
     
     this.generarPiezaAleatoria(false);
   
@@ -202,9 +202,7 @@ class MyScene extends THREE.Scene {
   colision () {
 
     this.piezaActual.stop();
-    const posicion = this.piezaActual.position.clone();
-    this.piezaActual.position.set( Math.round(posicion.x), Math.round(posicion.y), Math.round(posicion.z) )
-    
+        
     this.bloquesTablero[this.caraActual].attach(this.piezaActual);
     this.remove(this.piezaActual);
     
@@ -273,7 +271,7 @@ class MyScene extends THREE.Scene {
   siguienteNivel() {
 
     this.nivel++;
-    this.segundosBajada *= 0.8;
+    this.segundosBajada *= 0.9;
 
     const loader = new THREE.TextureLoader();
     const textura = loader.load('texturas/next_level.jpg');
@@ -473,14 +471,21 @@ class MyScene extends THREE.Scene {
     // --------------------------------------
     if(this.jugando){
 
-      this.tablero.update();
-      this.piezaActual.update();
       // this.piezaActual.actualizarRayos();
       this.boxPieza.setFromObject(this.piezaActual);
 
+      // Se calcula en base al delta, la distancia a recorrer.
+      // Se calcula aquí, ya que se necesita para saber si van a colisionar
+      const tiempoTranscurrido = this.piezaActual.tiempo.getDelta();
+      this.piezaActual.lastDistance = 20 * ( tiempoTranscurrido / this.piezaActual.segundos );
+
       if( this.piezaActual.movimiento && ( this.piezaActual.checkColision(this.tablero) || this.piezaActual.checkColision(this.bloquesTablero[this.caraActual]) ))
         this.colision();
-    
+      else{
+        this.tablero.update();
+        this.piezaActual.update();
+      }
+
     }  
     
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.

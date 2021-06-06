@@ -11,11 +11,17 @@ class Pieza extends THREE.Object3D {
     this.tiempo = new THREE.Clock();
     this.movimiento = true;
     this.rayos = [];
+    this.lastDistance = 0.5;
+    this.distanciaParado = 0
 
   }
   
   stop() {
     this.movimiento = false;
+
+    this.position.x += this.direccionBajada.x * this.distanciaParado;
+    this.position.y += this.direccionBajada.y * this.distanciaParado;
+    this.position.z += this.direccionBajada.z * this.distanciaParado;
   }
 
   actualizarRayos () {
@@ -40,13 +46,19 @@ class Pieza extends THREE.Object3D {
     this.actualizarRayos();
 
     let colision = false;
-  
+
     for( let i=0; i < this.rayos.length && !colision; i++){
       var salida = this.rayos[i].intersectObject(objeto, true);
-      if(salida.length)
-        colision = ( salida[0].distance < 0.5 );
+      if(salida.length){
+        colision = ( salida[0].distance < this.lastDistance );
+
+        if(colision)
+          this.distanciaParado = salida[0].distance-0.5;
+    
+      }
     }
 
+    
     return colision;
 
   }
@@ -54,15 +66,14 @@ class Pieza extends THREE.Object3D {
   update() {
 
     if(this.movimiento){
-      // No se comprueba el tiempo de finalización de la animación ya que la pieza parará al detectar una colisón
-      const tiempoTranscurrido = this.tiempo.getDelta();
-    
-      this.position.x += this.direccionBajada.x * 20 * ( tiempoTranscurrido / this.segundos );
-      this.position.y += this.direccionBajada.y * 20 * ( tiempoTranscurrido / this.segundos );
-      this.position.z += this.direccionBajada.z * 20 * ( tiempoTranscurrido / this.segundos );
+      // No se comprueba el tiempo de finalización de la animación ya que la pieza parará al detectar una colisón    
+      this.position.x += this.direccionBajada.x * this.lastDistance;
+      this.position.y += this.direccionBajada.y * this.lastDistance;
+      this.position.z += this.direccionBajada.z * this.lastDistance;
     }
 
   }
+
 }
 
 export { Pieza };
