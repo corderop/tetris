@@ -4,6 +4,10 @@
 import * as THREE from '../libs/three.module.js'
 import { GUI } from '../libs/dat.gui.module.js'
 import { TrackballControls } from '../libs/TrackballControls.js'
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// EL MÓDULO ORBIT CONTROLS NO ESTABA INCLUIDO EN LAS LIBRERÍAS DE PRADO
+// SIN EL, LOS CONTROLES DE LA CÁMARA NO FUNCIONARÁN Y EL PROYECTO POSIBLEMENTE NO CARGARÁ
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 import { OrbitControls } from '../libs/OrbitControls.js';
 import { getRandomInt } from './aux.js';
 
