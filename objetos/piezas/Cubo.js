@@ -76,43 +76,6 @@ class Cubo extends Pieza {
 
   }
 
-  // actualizarRayos() {
-
-  //   superiorDerecha = {
-  //     min: this.box[0].min
-  //   }
-
-  //   let posicion = new THREE.Vector3(
-  //     this.box[0].min.x + (this.box[0].max.x-this.box[0].min.x)/2 ,
-  //     this.box[0].min.y + (this.box[0].max.y-this.box[0].min.y)/2 ,
-  //     this.box[0].min.z + (this.box[0].max.z-this.box[0].min.z)/2
-  //   );
-  //   this.rayos.push(new THREE.Raycaster(posicion, this.direccionBajada, 0, 30 ) );
-
-  // }
-
-  // // Sobreescribe el método ya que este tiene una altura diferente
-  // checkColision (objeto) {
-
-  //   this.actualizarRayos();
-
-  //   let colision = false;
-  
-  //   for( let i=0; i < this.rayos.length && !colision; i++){
-  //     var salida = this.rayos[i].intersectObject(objeto, true);
-  //     if(salida.length){
-  //       colision = ( salida[0].distance < this.lastDistance );
-
-  //       if(colision)
-  //         this.distanciaParado = salida[0].distance-1;
-
-  //     }
-  //   }
-
-  //   return colision;
-
-  // }
-
   moverAPuntoDeInicio(cara){
 
     switch(cara){

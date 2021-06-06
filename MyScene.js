@@ -65,7 +65,7 @@ class MyScene extends THREE.Scene {
     // Para gestionar los niveles y las bajadas
     this.nivel = 1;
     this.puntuacion = 0;
-    this.segundosBajada = 1;
+    this.segundosBajada = 7;
     
     this.generarPiezaAleatoria(false);
   
